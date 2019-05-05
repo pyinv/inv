@@ -1,6 +1,6 @@
 """Asset Location."""
 
-from typing import Any, Callable, Optional
+from typing import Any
 
 from typesystem import String
 
