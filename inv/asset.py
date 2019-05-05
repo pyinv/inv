@@ -4,7 +4,7 @@ from typing import Any, Mapping, Type, TypeVar, cast
 
 from typesystem import Schema, String, ValidationError
 
-from inv.fields import AssetCode
+from inv.types import AssetCode, Location
 
 U = TypeVar('U', bound='Asset')
 
@@ -18,8 +18,8 @@ class Asset(Schema):
 
     # Key attributes.
     code = AssetCode()
+    location = Location()
     model = String(max_length=100)
-    location = String(max_length=100)
 
     @classmethod
     def load(cls: Type[U], data: Mapping[Any, Any]) -> U:

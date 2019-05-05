@@ -1,4 +1,4 @@
-"""Custom fields for inv."""
+"""Asset code."""
 
 from typing import Any, Callable, Optional
 
