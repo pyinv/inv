@@ -1,5 +1,9 @@
 # PyInv
 
+## Requirements
+
+Python 3.6+
+
 ## What is PyInv?
 
 For some time, SRO have been searching for a better inventory system to replace the current one. We found that whilst a Google Sheet is a reasonable solution, it has a lock on search and filtering, such that only one user can use it at a time. Additionally it offers a poor UX and is not particularly easy to use.
