@@ -1,6 +1,10 @@
 """Classes for assets."""
 
-from typesystem import Schema, String
+from typing import Any, Mapping, Type, TypeVar, cast
+
+from typesystem import Schema, String, ValidationError
+
+U = TypeVar('U', bound='Asset')
 
 
 class Asset(Schema):
@@ -15,7 +19,11 @@ class Asset(Schema):
     model = String(max_length=100)
     location = String(max_length=100)
 
-    def __init__(self, *, code: String, model: String, location: String) -> None:
-        self.code = code
-        self.model = model
-        self.location = location
+    @classmethod
+    def load(cls: Type[U], data: Mapping[Any, Any]) -> U:
+        """Load an asset from a dictionary."""
+        try:
+            schema = cls.validate(data)
+            return cast(U, schema)
+        except ValidationError:
+            raise
