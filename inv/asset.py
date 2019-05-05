@@ -4,6 +4,8 @@ from typing import Any, Mapping, Type, TypeVar, cast
 
 from typesystem import Schema, String, ValidationError
 
+from inv.fields import AssetCode
+
 U = TypeVar('U', bound='Asset')
 
 
@@ -15,7 +17,7 @@ class Asset(Schema):
     """
 
     # Key attributes.
-    code = String(max_length=100)
+    code = AssetCode()
     model = String(max_length=100)
     location = String(max_length=100)
 
