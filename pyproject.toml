@@ -6,8 +6,7 @@ authors = ["Dan Trickey <dan@trickey.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-# Once py.typed is merged, used PyPI version of Typesystem
-typesystem = {git = "https://github.com/pyinv/typesystem.git", branch = "master" }
+pydantic = "^0.32.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7"
