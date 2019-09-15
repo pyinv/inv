@@ -19,9 +19,6 @@ PyInv is a modular inventory and asset management system. It will support a numb
 - Customisable Inventory Schema and Attributes
 - Prevention of Cross-organisation Code Conflicts
 - Label generation and printing
-- Modular Storage Backends, including conversion between formats
-    - Git
-    - SQL
 - Modular Frontends
     - CLI
     - GUI
