@@ -3,7 +3,7 @@
 CMD:=poetry run
 PYMODULE:=inv
 TESTS:=tests
-EXTRACODE:=
+EXTRACODE:=example
 
 all: type test lint
 
