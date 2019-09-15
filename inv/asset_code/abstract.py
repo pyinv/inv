@@ -1,20 +1,26 @@
 """Abstract Base Class for an Asset Code."""
 from abc import ABCMeta, abstractmethod
-from typing import ClassVar, List, Pattern
+from re import compile
+from typing import ClassVar, List
 
 
 class AbstractAssetCode(metaclass=ABCMeta):
     """An abstract class defining functionality for an asset code."""
 
     name: ClassVar[str]
-    format_regex: ClassVar[Pattern[str]]
+    format_regex: ClassVar[str]
 
     def generate(
         self,
         *,
         quantity: int = 1,
     ) -> List[str]:
-        """Generate asset codes."""
+        """
+        Generate validated asset codes.
+
+        :param quantity: Number of codes to generate
+        :return: A list of generated asset codes.
+        """
         code_list: List[str] = []
         for _ in range(quantity):
             code_list.append(self._generate_code())
@@ -26,14 +32,38 @@ class AbstractAssetCode(metaclass=ABCMeta):
 
         return code_list
 
+    def verify(self, candidate: str) -> bool:
+        """
+        Verify a candidate asset code.
+
+        This function will check both the format and parity.
+
+        :param candidate: An unformatted asset code.
+        :return: True if valid code, false otherwise.
+        """
+        pattern = compile(self.format_regex)
+        match = pattern.match(candidate)
+        if match is None:
+            return False
+        return self._verify_code(candidate)
+
     @abstractmethod
     def _generate_code(self) -> str:
-        """Generate an individual asset code."""
+        """
+        Generate an individual asset code.
+
+        :return: An unformatted asset code.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def verify(self, candidate: str) -> bool:
-        """Verify whether a string is a valid asset code."""
+    def _verify_code(self, candidate: str) -> bool:
+        """
+        Verify whether a string is a valid asset code.
+
+        :param candidate: An unformatted asset code.
+        :return: True if valid code.
+        """
         raise NotImplementedError
 
 
