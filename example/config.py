@@ -7,6 +7,6 @@ from inv import Inventory
 from inv.asset_code import Damm32AssetCode
 
 inventory = Inventory(
-    Path(__file__),
+    Path(__file__).parent,
     asset_code_type=Damm32AssetCode,
 )
