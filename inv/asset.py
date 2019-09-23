@@ -1,7 +1,9 @@
 """Classes and schemas for an asset."""
 from pathlib import Path
+from typing import Any
 
 from pydantic import BaseModel
+from yaml import load, SafeLoader
 
 
 class Asset(BaseModel):
@@ -11,6 +13,8 @@ class Asset(BaseModel):
     asset_model: str
     name: str
 
-    def load_from_file(path: Path):
+    @classmethod
+    def load_from_file(cls, path: Path) -> 'Asset':
         """Load an asset from a yml file."""
-        pass
+        data: Any = load(path.open(mode='r'), Loader=SafeLoader)
+        return cls(**data)

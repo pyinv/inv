@@ -26,4 +26,4 @@ class Inventory:
     @property
     def tree(self) -> AssetTree:
         """Get the asset tree at the root of the inventory."""
-        return AssetTree.find_from_dir(self.root_path)
+        return AssetTree(self.root_path)
