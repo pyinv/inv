@@ -3,12 +3,12 @@ import click
 
 from inv.asset import Asset
 from inv.asset_tree import AssetTree
-from inv.cli.custom_types import DAMM32
+from inv.cli.custom_types import ASSET_CODE
 from inv.cli.env import get_inv
 
 
 @click.command()
-@click.option('--code', prompt=True, type=DAMM32())  # Hard-coded :/
+@click.option('--code', prompt=True, type=ASSET_CODE())
 def show(code: str) -> None:
     """
     Show information about an asset.

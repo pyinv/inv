@@ -1,6 +1,6 @@
 """Code for loading the environment."""
 import importlib.util
-from typing import no_type_check, cast
+from typing import cast, no_type_check
 
 import click
 from click import get_current_context

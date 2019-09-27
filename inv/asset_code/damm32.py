@@ -4,6 +4,8 @@ from random import choice
 from re import compile
 from typing import ClassVar
 
+from inv import Inventory
+
 from .abstract import AbstractAssetCode
 
 try:
@@ -41,6 +43,11 @@ class Damm32AssetCode(AbstractAssetCode):
 
         self._damm32 = Damm32()
 
+    @classmethod
+    def get_instance(cls, inventory: Inventory) -> 'AbstractAssetCode':
+        """Get an instance of this class."""
+        return cls(inventory.org, "AA")
+
     def _generate_code(self) -> str:
         """
         Generate an individual asset code.
@@ -57,3 +64,7 @@ class Damm32AssetCode(AbstractAssetCode):
     def _verify_code(self, candidate: str) -> bool:
         """Verify whether a string is a valid asset code."""
         return self._damm32.verify(self._org + candidate.upper())
+
+    def human_format(self, asset_code: str) -> str:
+        """Represent the code in a human readable way."""
+        return f"{self._org}-{asset_code[:3]}-{asset_code[3:]}"

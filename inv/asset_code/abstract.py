@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 from re import compile
 from typing import ClassVar, List
 
+from inv import Inventory
+
 
 class AbstractAssetCode(metaclass=ABCMeta):
     """An abstract class defining functionality for an asset code."""
@@ -46,6 +48,15 @@ class AbstractAssetCode(metaclass=ABCMeta):
         if match is None:
             return False
         return self._verify_code(candidate)
+
+    def human_format(self, code: str) -> str:
+        """Present the code in a human readable way."""
+        return code
+
+    @classmethod
+    def get_instance(cls, inventory: Inventory) -> 'AbstractAssetCode':
+        """Get an instance of this class."""
+        return cls()
 
     @abstractmethod
     def _generate_code(self) -> str:

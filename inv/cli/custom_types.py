@@ -4,10 +4,10 @@ from typing import Optional
 
 import click
 
-from inv.asset_code import Damm32AssetCode
 from inv.cli.env import get_inv
 
-class Damm32AssetCodeParamType(click.ParamType):
+
+class AssetCodeParamType(click.ParamType):
     """ParamType for Damm32 Asset Codes."""
 
     name = "asset_code"
@@ -19,7 +19,6 @@ class Damm32AssetCodeParamType(click.ParamType):
             ctx: Optional[click.Context],
     ) -> str:
         """Convert."""
-
         inv = get_inv()
 
         # Check the format, and convert to internal if needed.
@@ -33,13 +32,10 @@ class Damm32AssetCodeParamType(click.ParamType):
         else:
             value = match.group(1) + match.group(2)
 
-            # Prefix is unused here, so we use AA
-            d32ac = Damm32AssetCode(inv.org, "AA")
-
-            if not d32ac.verify(value):
+            if not inv.asset_code.verify(value):
                 self.fail(f"failed to verify asset code: {value}")
 
             return value
 
 
-DAMM32 = Damm32AssetCodeParamType
+ASSET_CODE = AssetCodeParamType
