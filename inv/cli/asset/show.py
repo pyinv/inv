@@ -8,7 +8,7 @@ from inv.cli.env import get_inv
 
 
 @click.command()
-@click.option('--code', prompt=True, type=DAMM32("ABC"))  # Hard-coded :/
+@click.option('--code', prompt=True, type=DAMM32())  # Hard-coded :/
 def show(code: str) -> None:
     """
     Show information about an asset.

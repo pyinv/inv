@@ -18,10 +18,12 @@ class Inventory:
         root_path: Path,
         *,
         asset_code_type: Type[AssetCodeVar],
+        org: str,
         meta_dir: str = "meta",
     ):
         self.asset_code_type = asset_code_type
         self.root_path = root_path
+        self.org = org
         self.meta_dir = root_path.joinpath(meta_dir)
 
     @property
@@ -31,4 +33,4 @@ class Inventory:
 
     def find_asset_by_code(self, asset_code: str) -> Optional[Union[AssetTree, Asset]]:
         """Find an asset or asset tree by code."""
-        return self.tree.find_asset_by_asset_code(asset_code)
+        return self.tree.find_asset_by_asset_code(self.org, asset_code)
