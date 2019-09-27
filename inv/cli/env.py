@@ -10,7 +10,6 @@ from inv import Inventory
 @no_type_check
 def load_env() -> Inventory:
     """Load the inventory config and environment."""
-
     try:
         spec = importlib.util.spec_from_file_location("config", "config.py")
         config = importlib.util.module_from_spec(spec)

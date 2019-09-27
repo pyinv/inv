@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel
-from yaml import load, SafeLoader
+from yaml import SafeLoader, load
 
 
 class Asset(BaseModel):
