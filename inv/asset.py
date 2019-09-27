@@ -6,10 +6,11 @@ from typing import TYPE_CHECKING, Any
 from pydantic import BaseModel
 from yaml import SafeLoader, load
 
-from inv.asset_model import AssetModel
+from .asset_model import AssetModel
 
 if TYPE_CHECKING:
-    from inv.inventory import Inventory
+    from .inventory import Inventory
+    from .asset_tree import AssetTree
 
 
 class Asset(BaseModel):
@@ -63,9 +64,13 @@ class Asset(BaseModel):
     def display(self) -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
-        # print(f"Location: {self.parent.container.name}")
-        print(f"Model: {self.asset_model}")  # TODO: Use model
+        # TODO: Show location
+        print(f"Model: {self.model.name}")
         print(f"Name: {self.name}")
+
+    def get_parent(self, inv: 'Inventory') -> 'AssetTree':
+        """Get the parent."""
+        return AssetTree(path=self.path.parent, inv=inv)
 
     def calculate_filename(self) -> str:
         """Calculate the stem of the filename."""
