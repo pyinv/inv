@@ -1,8 +1,9 @@
 """Code for loading the environment."""
 import importlib.util
-from typing import no_type_check
+from typing import no_type_check, cast
 
 import click
+from click import get_current_context
 
 from inv import Inventory
 
@@ -19,3 +20,9 @@ def load_env() -> Inventory:
         exit(1)
 
     return config.inventory
+
+
+def get_inv() -> Inventory:
+    """Get the inventory via context."""
+    inv = cast(Inventory, get_current_context().obj)
+    return inv

@@ -2,7 +2,7 @@
 import click
 
 from inv.asset_tree import AssetTree
-from inv.cli.env import load_env
+from inv.cli.env import get_inv
 
 
 def list_contents(tree: AssetTree) -> None:
@@ -18,5 +18,5 @@ def list_contents(tree: AssetTree) -> None:
 @click.command()
 def list() -> None:
     """List assets."""
-    inventory = load_env()
-    list_contents(inventory.tree)
+    inv = get_inv()
+    list_contents(inv.tree)

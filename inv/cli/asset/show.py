@@ -4,7 +4,7 @@ import click
 from inv.asset import Asset
 from inv.asset_tree import AssetTree
 from inv.cli.custom_types import DAMM32
-from inv.cli.env import load_env
+from inv.cli.env import get_inv
 
 
 @click.command()
@@ -19,7 +19,7 @@ def show(code: str) -> None:
 
     e.g inv asset show --code SRO-ABC-DEF
     """
-    inventory = load_env()
+    inventory = get_inv()
 
     asset = inventory.find_asset_by_code(code)
 
