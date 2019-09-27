@@ -30,15 +30,15 @@ class AssetModel(BaseModel):
 
         model = cls(**data)
 
-        if path.stem == model._calculate_filename():
+        if path.stem == model.calculate_filename():
             return model
 
         raise ValueError(
             f"Bad filename for model: {path.name}. "
-            f"Expected {model._calculate_filename()}{path.suffix}",
+            f"Expected {model.calculate_filename()}{path.suffix}",
         )
 
-    def _calculate_filename(self) -> str:
+    def calculate_filename(self) -> str:
         """Calculate the filename from the data."""
         name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)

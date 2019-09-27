@@ -63,4 +63,4 @@ class Asset(BaseModel):
         name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)
         # TODO: Add model
-        return f"{self.asset_code}_{name_format}"
+        return f"{self.asset_code}_{self.model.calculate_filename()}_{name_format}"
