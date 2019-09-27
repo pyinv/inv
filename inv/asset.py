@@ -20,17 +20,22 @@ class Asset(BaseModel):
     asset_model: str
     name: str
 
+    model: AssetModel
+
     @classmethod
     def load_from_file(cls, path: Path, inv: 'Inventory') -> 'Asset':
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
 
-        # TODO: Check that the model exists
+        model = AssetModel.load_from_file(
+            inv.meta_dir.joinpath(Path(data["asset_model"] + ".yml")),
+            inv,
+        )
 
-        asset = cls(**{
-            **data,
-            'path': path,
-        })
+        data.update({'path': path})
+        data.update({'model': model})
+
+        asset = cls(**data)
 
         expected_name = asset._calculate_filename()
 
@@ -45,11 +50,6 @@ class Asset(BaseModel):
                 return asset
 
         raise ValueError(f"Bad filename: {path}. Expected: {expected_name}.yml")
-
-    @property
-    def model(self) -> AssetModel:
-        """The model of this asset."""
-        pass
 
     # @property
     # def parent(self) -> AssetTree:
