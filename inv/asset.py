@@ -51,10 +51,6 @@ class Asset(BaseModel):
 
         raise ValueError(f"Bad filename: {path}. Expected: {expected_name}.yml")
 
-    # @property
-    # def parent(self) -> AssetTree:
-    #     """The parent that this asset is within."""
-
     def display(self) -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
@@ -64,7 +60,7 @@ class Asset(BaseModel):
 
     def _calculate_filename(self) -> str:
         """Calculate the stem of the filename."""
-        name_format = self.name.lower().replace(" ", "_")
+        name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)
         # TODO: Add model
         return f"{self.asset_code}_{name_format}"
