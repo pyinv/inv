@@ -43,12 +43,10 @@ def edit(code: str) -> None:
     click.edit(filename=cast(str, file.resolve()))
 
     try:
+        new_asset = Asset.load_from_file(file, inventory, ignore_filename=True)
         if isinstance(asset, Asset):
-            new_asset = Asset.load_from_file(file, inventory, ignore_filename=True)
-
             if new_asset.asset_code != asset.asset_code:
                 # In future, just hold a copy of the old object
-                # Remove duplicate code too!
                 file.open('w').write(data)
                 click.secho(
                     "You are not allowed to edit the asset code.",
@@ -58,14 +56,20 @@ def edit(code: str) -> None:
                 exit(1)
 
             new_path = file.parent.joinpath(f"{new_asset.calculate_filename()}.yml")
-
             move(file, new_path)
         else:
-            # In future, just hold a copy of the old object
-            # Remove duplicate code too!
-            file.open('w').write(data)
-            click.secho("Unable to edit Container currently", err=True, fg='red')
-            exit(1)
+            folder = file.parent
+            if new_asset.asset_code != asset.container.asset_code:
+                # In future, just hold a copy of the old object
+                file.open('w').write(data)
+                click.secho(
+                    "You are not allowed to edit the asset code.",
+                    err=True,
+                    fg='red',
+                )
+                exit(1)
+
+            move(folder, folder.parent.joinpath(new_asset.calculate_filename()))
 
     except ValidationError as e:
         # In future, just hold a copy of the old object

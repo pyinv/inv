@@ -64,7 +64,7 @@ class Asset(BaseModel):
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
         # print(f"Location: {self.parent.container.name}")
-        print(f"Model: {self.asset_model}")
+        print(f"Model: {self.asset_model}")  # TODO: Use model
         print(f"Name: {self.name}")
 
     def calculate_filename(self) -> str:
