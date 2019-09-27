@@ -1,29 +1,42 @@
 """A asset of items."""
 from pathlib import Path
 from re import compile
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from .asset import Asset
+
+if TYPE_CHECKING:
+    from .inventory import Inventory
 
 
 class AssetTree:
     """A tree of assets."""
 
     path: Path
-    container: Optional[Asset] = None
+    container: Asset
 
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, inv: 'Inventory') -> None:
         if not path.is_dir():
             raise ValueError(
                 f"{path} is not a directory, but attempted to create AssetTree.",
             )
 
         self.path = path
+        self.inv = inv
 
         container_path = path.joinpath("data.yml")
 
         if container_path.exists():
-            self.container = Asset.load_from_file(container_path)
+            self.container = Asset.load_from_file(container_path, inv)
+
+            if not self.container.model.container:
+                raise ValueError(
+                    f"{self.container.name} is a {self.container.model.name}."
+                    f"It cannot be a container.",
+                )
+
+        else:
+            raise ValueError(f"Container path does not exist: {container_path}")
 
     def __repr__(self) -> str:
         """Get a string representation of an asset tree."""
@@ -48,9 +61,9 @@ class AssetTree:
 
         for child in children:
             if child.is_dir():
-                contents.append(self.__class__(child))
+                contents.append(self.__class__(child, self.inv))
             else:
-                contents.append(Asset.load_from_file(child))
+                contents.append(Asset.load_from_file(child, self.inv))
         return contents
 
     def find_asset_by_asset_code(
@@ -67,8 +80,7 @@ class AssetTree:
             elif isinstance(entry, Asset):
                 look = entry
 
-            if look is not None and \
-                    look.asset_code == f"{org}-{asset_code[:3]}-{asset_code[3:]}":
+            if look.asset_code == f"{org}-{asset_code[:3]}-{asset_code[3:]}":
                 return entry
 
             if isinstance(entry, AssetTree):

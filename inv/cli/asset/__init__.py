@@ -2,7 +2,7 @@
 import click
 
 from .edit import edit
-from .list_assets import list
+from .list import list
 from .move import move
 from .show import show
 

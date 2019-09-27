@@ -1,9 +1,15 @@
 """Classes and schemas for an asset."""
 from pathlib import Path
-from typing import Any
+from re import sub
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
 from yaml import SafeLoader, load
+
+from .asset_model import AssetModel
+
+if TYPE_CHECKING:
+    from .inventory import Inventory
 
 
 class Asset(BaseModel):
@@ -14,17 +20,61 @@ class Asset(BaseModel):
     asset_model: str
     name: str
 
+    model: AssetModel
+
     @classmethod
-    def load_from_file(cls, path: Path) -> 'Asset':
+    def load_from_file(
+            cls,
+            path: Path,
+            inv: 'Inventory',
+            *,
+            ignore_filename: bool = False,
+    ) -> 'Asset':
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
-        return cls(**{
-            **data,
-            'path': path,
-        })
 
-    def display(self) -> None:
+        model = AssetModel.load_from_file(
+            inv.meta_dir.joinpath(Path(data["asset_model"] + ".yml")),
+            inv,
+        )
+
+        data.update({'path': path})
+        data.update({'model': model})
+
+        asset = cls(**data)
+
+        if model.container and path.name != "data.yml":
+            raise ValueError(
+                f"Asset Model {model.name} must "
+                f"be stored as a container",
+            )
+
+        if ignore_filename:
+            return asset
+
+        # Check the filename
+        expected_name = asset.calculate_filename()
+        if path.stem == expected_name:
+            return asset
+
+        if path.name == "data.yml":
+            if path.parent.name == expected_name:
+                return asset
+            if path.parent == Path("."):
+                # Root
+                return asset
+
+        raise ValueError(f"Bad filename: {path}. Expected: {expected_name}.yml")
+
+    def display(self, inv: 'Inventory') -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
-        print(f"Asset Model: {self.asset_model}")
-        print(f"Asset Name: {self.name}")
+        print(f"Current Location: {self.path.parent.stem}")
+        print(f"Model: {self.model.name}")
+        print(f"Name: {self.name}")
+
+    def calculate_filename(self) -> str:
+        """Calculate the stem of the filename."""
+        name_format = self.name.lower().replace(" ", "_").replace("-", "_")
+        name_format = sub('[^a-z0-9_]+', '', name_format)
+        return f"{self.asset_code}_{self.model.calculate_filename()}_{name_format}"
