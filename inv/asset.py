@@ -17,6 +17,4 @@ class Asset(BaseModel):
     def load_from_file(cls, path: Path) -> 'Asset':
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
-
-        
         return cls(**data)

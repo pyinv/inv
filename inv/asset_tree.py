@@ -3,8 +3,6 @@ from re import compile
 from pathlib import Path
 from typing import List, Optional, Set, Union
 
-from cached_property import cached_property
-
 from .asset import Asset
 
 
@@ -31,7 +29,7 @@ class AssetTree:
         """Get a string representation of an asset tree."""
         return f"{self.__class__.__name__}(path={self.path.absolute()}, container={self.container})"
 
-    @cached_property
+    @property  # Cache in future
     def contents(self) -> List[Union[Asset, 'AssetTree']]:
         """Get the contents of the container."""
         candidates = []
