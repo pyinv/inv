@@ -3,6 +3,7 @@
 import click
 
 from .asset import asset
+from .model import model
 from .env import load_env
 from .validate import validate
 
@@ -18,6 +19,7 @@ def app(ctx: click.Context) -> None:
 
 
 app.add_command(asset)
+app.add_command(model)
 app.add_command(validate)
 
 if __name__ == "__main__":
