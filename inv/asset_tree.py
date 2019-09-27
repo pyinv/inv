@@ -28,6 +28,13 @@ class AssetTree:
 
         if container_path.exists():
             self.container = Asset.load_from_file(container_path, inv)
+
+            if not self.container.model.container:
+                raise ValueError(
+                    f"{self.container.name} is a {self.container.model.name}."
+                    f"It cannot be a container.",
+                )
+
         else:
             raise ValueError(f"Container path does not exist: {container_path}")
 

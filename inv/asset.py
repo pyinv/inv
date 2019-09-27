@@ -43,6 +43,12 @@ class Asset(BaseModel):
 
         asset = cls(**data)
 
+        if model.container and path.name != "data.yml":
+            raise ValueError(
+                f"Asset Model {model.name} must "
+                f"be stored as a container",
+            )
+
         if ignore_filename:
             return asset
 

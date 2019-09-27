@@ -23,8 +23,6 @@ class AssetModel(BaseModel):
 
     # TODO: Manufacturer
 
-    # TODO: Verify that container is set on containers
-
     @classmethod
     def load_from_file(cls, path: Path, inv: 'Inventory') -> 'AssetModel':
         """Load a model from a yml file."""
