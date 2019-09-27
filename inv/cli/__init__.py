@@ -6,6 +6,7 @@ from .asset import asset
 from .env import load_env
 from .validate import validate
 
+
 @click.group('inv', invoke_without_command=True)
 @click.pass_context
 def app(ctx: click.Context) -> None:
