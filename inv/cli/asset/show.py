@@ -28,10 +28,10 @@ def show(code: str) -> None:
         exit(1)
 
     if isinstance(asset, Asset):
-        asset.display()
+        asset.display(inventory)
 
     if isinstance(asset, AssetTree):
-        asset.container.display()
+        asset.container.display(inventory)
         print(f"Found: {len(asset.contents)} items in container")
         for i in asset.contents:
             print(f"\t{str(i)}")

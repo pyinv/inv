@@ -10,7 +10,6 @@ from .asset_model import AssetModel
 
 if TYPE_CHECKING:
     from .inventory import Inventory
-    from .asset_tree import AssetTree
 
 
 class Asset(BaseModel):
@@ -61,16 +60,12 @@ class Asset(BaseModel):
 
         raise ValueError(f"Bad filename: {path}. Expected: {expected_name}.yml")
 
-    def display(self) -> None:
+    def display(self, inv: 'Inventory') -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
-        # TODO: Show location
+        print(f"Current Location: {self.path.parent.stem}")
         print(f"Model: {self.model.name}")
         print(f"Name: {self.name}")
-
-    def get_parent(self, inv: 'Inventory') -> 'AssetTree':
-        """Get the parent."""
-        return AssetTree(path=self.path.parent, inv=inv)
 
     def calculate_filename(self) -> str:
         """Calculate the stem of the filename."""
