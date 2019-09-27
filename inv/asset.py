@@ -9,6 +9,7 @@ from yaml import SafeLoader, load
 class Asset(BaseModel):
     """An asset."""
 
+    path: Path
     asset_code: str
     asset_model: str
     name: str
@@ -17,7 +18,10 @@ class Asset(BaseModel):
     def load_from_file(cls, path: Path) -> 'Asset':
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
-        return cls(**data)
+        return cls(**{
+            **data,
+            'path': path,
+        })
 
     def display(self) -> None:
         """Print the information."""

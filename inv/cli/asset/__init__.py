@@ -1,6 +1,7 @@
 """Commands to control asset."""
 import click
 
+from .edit import edit
 from .list_assets import list
 from .show import show
 
@@ -11,5 +12,6 @@ def asset() -> None:
     pass
 
 
+asset.add_command(edit)
 asset.add_command(list)
 asset.add_command(show)
