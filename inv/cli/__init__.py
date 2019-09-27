@@ -4,7 +4,7 @@ import click
 
 from .asset import asset
 from .env import load_env
-
+from .validate import validate
 
 @click.group('inv', invoke_without_command=True)
 @click.pass_context
@@ -13,11 +13,11 @@ def app(ctx: click.Context) -> None:
     ctx.obj = load_env()
 
     if ctx.invoked_subcommand is None:
-        click.echo('Found inventory config')
-        click.secho('Nothing is implemented here.', err=True, fg="red")
+        click.echo(app.get_help(ctx))
 
 
 app.add_command(asset)
+app.add_command(validate)
 
 if __name__ == "__main__":
     app()
