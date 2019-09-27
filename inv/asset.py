@@ -23,7 +23,13 @@ class Asset(BaseModel):
     model: AssetModel
 
     @classmethod
-    def load_from_file(cls, path: Path, inv: 'Inventory') -> 'Asset':
+    def load_from_file(
+            cls,
+            path: Path,
+            inv: 'Inventory',
+            *,
+            ignore_filename: bool = False,
+    ) -> 'Asset':
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
 
@@ -37,8 +43,11 @@ class Asset(BaseModel):
 
         asset = cls(**data)
 
-        expected_name = asset._calculate_filename()
+        if ignore_filename:
+            return asset
 
+        # Check the filename
+        expected_name = asset.calculate_filename()
         if path.stem == expected_name:
             return asset
 
@@ -58,9 +67,8 @@ class Asset(BaseModel):
         print(f"Model: {self.asset_model}")
         print(f"Name: {self.name}")
 
-    def _calculate_filename(self) -> str:
+    def calculate_filename(self) -> str:
         """Calculate the stem of the filename."""
         name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)
-        # TODO: Add model
         return f"{self.asset_code}_{self.model.calculate_filename()}_{name_format}"

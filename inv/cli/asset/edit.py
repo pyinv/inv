@@ -1,12 +1,12 @@
 """Command to edit an asset."""
 from pathlib import Path
+from shutil import move
 from typing import cast
 
 import click
 from pydantic import ValidationError
 
 from inv.asset import Asset
-from inv.asset_tree import AssetTree
 from inv.cli.custom_types import ASSET_CODE
 from inv.cli.env import get_inv
 
@@ -35,22 +35,41 @@ def edit(code: str) -> None:
 
     if isinstance(asset, Asset):
         file = asset.path
-    elif isinstance(asset, AssetTree):
+    else:  # AssetTree
         file = asset.container.path
-    else:
-        raise RuntimeError("Help. Remove me.")
 
     data = file.open('r').read()
 
     click.edit(filename=cast(str, file.resolve()))
 
-    # TODO: Update filename
-
-    # TODO: Reject any changes to asset code
-
     try:
-        Asset.load_from_file(file, inventory)
+        if isinstance(asset, Asset):
+            new_asset = Asset.load_from_file(file, inventory, ignore_filename=True)
+
+            if new_asset.asset_code != asset.asset_code:
+                # In future, just hold a copy of the old object
+                # Remove duplicate code too!
+                file.open('w').write(data)
+                click.secho(
+                    "You are not allowed to edit the asset code.",
+                    err=True,
+                    fg='red',
+                )
+                exit(1)
+
+            new_path = file.parent.joinpath(f"{new_asset.calculate_filename()}.yml")
+
+            move(file, new_path)
+        else:
+            # In future, just hold a copy of the old object
+            # Remove duplicate code too!
+            file.open('w').write(data)
+            click.secho("Unable to edit Container currently", err=True, fg='red')
+            exit(1)
+
     except ValidationError as e:
+        # In future, just hold a copy of the old object
+        # Remove duplicate code too!
         file.open('w').write(data)
         click.secho("Invalid data.", err=True, fg='red')
         click.secho(str(e), err=True, fg='red')
