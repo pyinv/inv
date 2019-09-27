@@ -52,3 +52,24 @@ class AssetTree:
             else:
                 contents.append(Asset.load_from_file(child))
         return contents
+
+    def find_asset_by_asset_code(
+            self,
+            asset_code: str,
+    ) -> Optional[Union[Asset, 'AssetTree']]:
+        """Find an asset or asset tree within this one by code."""
+        # This can also certainly be done more efficiently.
+
+        for entry in self.contents:
+            if isinstance(entry, AssetTree):
+                look = entry.container
+            elif isinstance(entry, Asset):
+                look = entry
+
+            if look is not None and \
+                    look.asset_code == f"ABC-{asset_code[:3]}-{asset_code[3:]}":
+                return entry
+
+            if isinstance(entry, AssetTree):
+                return entry.find_asset_by_asset_code(asset_code)
+        return None

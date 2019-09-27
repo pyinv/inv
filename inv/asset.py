@@ -18,3 +18,9 @@ class Asset(BaseModel):
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
         return cls(**data)
+
+    def display(self) -> None:
+        """Print the information."""
+        print(f"Asset Code: {self.asset_code}")
+        print(f"Asset Model: {self.asset_model}")
+        print(f"Asset Name: {self.name}")

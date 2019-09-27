@@ -1,19 +1,10 @@
 """Command to show an asset."""
 import click
 
+from inv.asset import Asset
 from inv.asset_tree import AssetTree
-from inv.cli.env import load_env
 from inv.cli.custom_types import DAMM32
-
-
-def list_contents(tree: AssetTree) -> None:
-    """List the contents of a tree."""
-    for item in tree.contents:
-        if isinstance(item, AssetTree):
-            print(item.container)
-            list_contents(item)
-        else:
-            print(item)
+from inv.cli.env import load_env
 
 
 @click.command()
@@ -29,4 +20,18 @@ def show(code: str) -> None:
     e.g inv asset show --code SRO-ABC-DEF
     """
     inventory = load_env()
-    print(code)
+
+    asset = inventory.find_asset_by_code(code)
+
+    if asset is None:
+        click.secho(f"Unable to find asset: {code}.", err=True, fg="red")
+        exit(1)
+
+    if isinstance(asset, Asset):
+        asset.display()
+
+    if isinstance(asset, AssetTree) and asset.container is not None:
+        asset.container.display()
+        print(f"Found: {len(asset.contents)} items in container")
+        for i in asset.contents:
+            print(f"\t{str(i)}")

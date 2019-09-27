@@ -1,8 +1,9 @@
 """The main inventory class."""
 
 from pathlib import Path
-from typing import Type, TypeVar
+from typing import Optional, Type, TypeVar, Union
 
+from .asset import Asset
 from .asset_code import AbstractAssetCode
 from .asset_tree import AssetTree
 
@@ -27,3 +28,7 @@ class Inventory:
     def tree(self) -> AssetTree:
         """Get the asset tree at the root of the inventory."""
         return AssetTree(self.root_path)
+
+    def find_asset_by_code(self, asset_code: str) -> Optional[Union[AssetTree, Asset]]:
+        """Find an asset or asset tree by code."""
+        return self.tree.find_asset_by_asset_code(asset_code)
