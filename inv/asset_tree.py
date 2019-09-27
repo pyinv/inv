@@ -1,9 +1,12 @@
 """A asset of items."""
 from pathlib import Path
 from re import compile
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 from .asset import Asset
+
+if TYPE_CHECKING:
+    from .inventory import Inventory
 
 
 class AssetTree:
@@ -12,18 +15,19 @@ class AssetTree:
     path: Path
     container: Optional[Asset] = None
 
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, inv: 'Inventory') -> None:
         if not path.is_dir():
             raise ValueError(
                 f"{path} is not a directory, but attempted to create AssetTree.",
             )
 
         self.path = path
+        self.inv = inv
 
         container_path = path.joinpath("data.yml")
 
         if container_path.exists():
-            self.container = Asset.load_from_file(container_path)
+            self.container = Asset.load_from_file(container_path, inv)
 
     def __repr__(self) -> str:
         """Get a string representation of an asset tree."""
@@ -48,9 +52,9 @@ class AssetTree:
 
         for child in children:
             if child.is_dir():
-                contents.append(self.__class__(child))
+                contents.append(self.__class__(child, self.inv))
             else:
-                contents.append(Asset.load_from_file(child))
+                contents.append(Asset.load_from_file(child, self.inv))
         return contents
 
     def find_asset_by_asset_code(

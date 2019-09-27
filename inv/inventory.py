@@ -31,7 +31,7 @@ class Inventory:
     @property
     def tree(self) -> AssetTree:
         """Get the asset tree at the root of the inventory."""
-        return AssetTree(self.root_path)
+        return AssetTree(self.root_path, self)
 
     @property
     def asset_code(self) -> 'AbstractAssetCode':

@@ -1,5 +1,6 @@
 """Command to edit an asset."""
 from pathlib import Path
+from typing import cast
 
 import click
 from pydantic import ValidationError
@@ -34,17 +35,23 @@ def edit(code: str) -> None:
 
     if isinstance(asset, Asset):
         file = asset.path
-    elif isinstance(asset, AssetTree):
+    elif isinstance(asset, AssetTree) and asset.container is not None:
         file = asset.container.path
+    else:
+        raise RuntimeError("Help. Remove me.")
 
     data = file.open('r').read()
 
-    click.edit(filename=file)
+    click.edit(filename=cast(str, file.resolve()))
+
+    # Update filename
+
+    # Reject any changes to asset code
 
     try:
-        Asset.load_from_file(file)
+        Asset.load_from_file(file, inventory)
     except ValidationError as e:
         file.open('w').write(data)
-        click.secho("Invalid data.", err=True, color="red")
-        click.secho(str(e), err=True, color="red")
+        click.secho("Invalid data.", err=True, fg='red')
+        click.secho(str(e), err=True, fg='red')
         exit(1)
