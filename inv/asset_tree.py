@@ -13,7 +13,7 @@ class AssetTree:
     """A tree of assets."""
 
     path: Path
-    container: Optional[Asset] = None
+    container: Asset
 
     def __init__(self, path: Path, inv: 'Inventory') -> None:
         if not path.is_dir():
@@ -28,6 +28,8 @@ class AssetTree:
 
         if container_path.exists():
             self.container = Asset.load_from_file(container_path, inv)
+        else:
+            raise ValueError("Container path does not exist.")
 
     def __repr__(self) -> str:
         """Get a string representation of an asset tree."""
@@ -71,8 +73,7 @@ class AssetTree:
             elif isinstance(entry, Asset):
                 look = entry
 
-            if look is not None and \
-                    look.asset_code == f"{org}-{asset_code[:3]}-{asset_code[3:]}":
+            if look.asset_code == f"{org}-{asset_code[:3]}-{asset_code[3:]}":
                 return entry
 
             if isinstance(entry, AssetTree):

@@ -35,7 +35,7 @@ def edit(code: str) -> None:
 
     if isinstance(asset, Asset):
         file = asset.path
-    elif isinstance(asset, AssetTree) and asset.container is not None:
+    elif isinstance(asset, AssetTree):
         file = asset.container.path
     else:
         raise RuntimeError("Help. Remove me.")
@@ -44,9 +44,9 @@ def edit(code: str) -> None:
 
     click.edit(filename=cast(str, file.resolve()))
 
-    # Update filename
+    # TODO: Update filename
 
-    # Reject any changes to asset code
+    # TODO: Reject any changes to asset code
 
     try:
         Asset.load_from_file(file, inventory)

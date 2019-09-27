@@ -24,9 +24,9 @@ class Asset(BaseModel):
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
 
-        # Check that the code and name in the filename match.
+        # TODO: Check that the code and name in the filename match.
 
-        # Check that the model exists
+        # TODO: Check that the model exists
 
         return cls(**{
             **data,
@@ -39,12 +39,12 @@ class Asset(BaseModel):
         pass
 
     # @property
-    # def container(self) -> AssetTree:
-    #     """The container that this asset is within."""
+    # def parent(self) -> AssetTree:
+    #     """The parent that this asset is within."""
 
     def display(self) -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
-        # print(f"Location: {self.container.container.name}")
+        # print(f"Location: {self.parent.container.name}")
         print(f"Model: {self.asset_model}")
         print(f"Name: {self.name}")

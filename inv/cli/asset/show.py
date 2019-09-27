@@ -30,7 +30,7 @@ def show(code: str) -> None:
     if isinstance(asset, Asset):
         asset.display()
 
-    if isinstance(asset, AssetTree) and asset.container is not None:
+    if isinstance(asset, AssetTree):
         asset.container.display()
         print(f"Found: {len(asset.contents)} items in container")
         for i in asset.contents:
