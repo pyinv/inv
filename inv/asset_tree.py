@@ -29,7 +29,7 @@ class AssetTree:
         if container_path.exists():
             self.container = Asset.load_from_file(container_path, inv)
         else:
-            raise ValueError("Container path does not exist.")
+            raise ValueError(f"Container path does not exist: {container_path}")
 
     def __repr__(self) -> str:
         """Get a string representation of an asset tree."""
