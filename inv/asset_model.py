@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Any
 from pydantic import BaseModel
 from yaml import SafeLoader, load
 
+from .asset_manufacturer import AssetManufacturer
+
 if TYPE_CHECKING:
     from .inventory import Inventory
 
@@ -21,12 +23,16 @@ class AssetModel(BaseModel):
     name: str
     container: bool
 
-    # TODO: Manufacturer
+    manufacturer: AssetManufacturer
 
     @classmethod
     def load_from_file(cls, path: Path, inv: 'Inventory') -> 'AssetModel':
         """Load a model from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
+
+        manufacturer = AssetManufacturer.load_from_file(path.parent, inv)
+
+        data.update({'manufacturer': manufacturer})
 
         model = cls(**data)
 
