@@ -66,6 +66,11 @@ class AssetTree:
                 contents.append(Asset.load_from_file(child, self.inv))
         return contents
 
+    @property
+    def asset_code(self) -> str:
+        """Get the asset code of the container."""
+        return self.container.asset_code
+
     def find_asset_by_asset_code(
             self,
             org: str,
@@ -84,5 +89,7 @@ class AssetTree:
                 return entry
 
             if isinstance(entry, AssetTree):
-                return entry.find_asset_by_asset_code(org, asset_code)
+                retval = entry.find_asset_by_asset_code(org, asset_code)
+                if retval is not None:
+                    return retval
         return None
