@@ -3,6 +3,7 @@
 import click
 
 from .asset import asset
+from .manufacturer import manufacturer
 from .model import model
 from .env import load_env
 from .validate import validate
@@ -19,6 +20,7 @@ def app(ctx: click.Context) -> None:
 
 
 app.add_command(asset)
+app.add_command(manufacturer)
 app.add_command(model)
 app.add_command(validate)
 
