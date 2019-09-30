@@ -22,6 +22,7 @@ class AssetModel(BaseModel):
 
     name: str
     container: bool
+    path: Path
 
     manufacturer: AssetManufacturer
 
@@ -33,6 +34,7 @@ class AssetModel(BaseModel):
         manufacturer = AssetManufacturer.load_from_file(path.parent, inv)
 
         data.update({'manufacturer': manufacturer})
+        data.update({'path': path})
 
         model = cls(**data)
 

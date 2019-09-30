@@ -12,7 +12,7 @@ from inv.cli.env import get_inv
 
 @click.command()
 @click.option('--destination', prompt=True, type=ASSET_CODE())
-def move(destination: str) -> None:
+def move(destination_code: str) -> None:
     """
     Move an asset.
 
@@ -20,10 +20,14 @@ def move(destination: str) -> None:
     """
     inventory = get_inv()
 
-    destination = inventory.find_asset_by_code(destination)
+    destination = inventory.find_asset_by_code(destination_code)
 
     if destination is None:
-        click.secho(f"Unable to find destination: {destination}.", err=True, fg="red")
+        click.secho(
+            f"Unable to find destination: {destination_code}.",
+            err=True,
+            fg="red",
+        )
         exit(1)
 
     # Check if container
@@ -33,7 +37,9 @@ def move(destination: str) -> None:
         exit(1)
     else:
 
-        click.echo(f"Scan items to move to {destination.container.name} ({destination.container.asset_code}).")
+        click.echo(f"Scan items to move to "
+                   f"{destination.container.name} "
+                   f"({destination.container.asset_code}).")
         click.echo(f"Scan the destination again to finish.")
 
         # If moving container, move contents too!
@@ -45,7 +51,7 @@ def move(destination: str) -> None:
 
             if isinstance(asset, Asset):
                 ac = asset.asset_code
-            else:
+            elif isinstance(asset, AssetTree):
                 ac = asset.container.asset_code
 
             if asset is None:
@@ -54,8 +60,14 @@ def move(destination: str) -> None:
                 loop = False
             else:
                 if isinstance(asset, AssetTree):
-                    if destination.asset_code in map(lambda x: x.asset_code, asset.contents):
-                        click.secho(f"Unable to move parent of asset into asset.", err=True, fg="red")
+                    if destination.asset_code in map(
+                            lambda x: x.asset_code, asset.contents,
+                    ):
+                        click.secho(
+                            f"Unable to move parent of asset into asset.",
+                            err=True,
+                            fg="red",
+                        )
                     else:
                         source_assets.append(asset)
                 else:

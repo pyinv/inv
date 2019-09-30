@@ -9,4 +9,5 @@ def manufacturer() -> None:
     """Manipulate and view manufacturers."""
     pass
 
+
 manufacturer.add_command(list)

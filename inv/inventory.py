@@ -1,9 +1,11 @@
 """The main inventory class."""
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Type, TypeVar, Union
 
 from .asset import Asset
+from .asset_manufacturer import AssetManufacturer
+from .asset_model import AssetModel
 from .asset_tree import AssetTree
 
 if TYPE_CHECKING:
@@ -41,3 +43,11 @@ class Inventory:
     def find_asset_by_code(self, asset_code: str) -> Optional[Union[AssetTree, Asset]]:
         """Find an asset or asset tree by code."""
         return self.tree.find_asset_by_asset_code(self.org, asset_code)
+
+    def get_models_by_manufacturer(self, man: AssetManufacturer) -> List[AssetModel]:
+        """Get all models from a manufacturer."""
+        models = []
+        for model_file in man.path.iterdir():
+            if model_file.stem != "data":  # Ignore manufacturer file
+                models.append(AssetModel.load_from_file(model_file, self))
+        return models

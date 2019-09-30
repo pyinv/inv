@@ -9,4 +9,5 @@ def model() -> None:
     """Manipulate and view models."""
     pass
 
+
 model.add_command(list)

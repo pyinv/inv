@@ -3,9 +3,9 @@
 import click
 
 from .asset import asset
+from .env import load_env
 from .manufacturer import manufacturer
 from .model import model
-from .env import load_env
 from .validate import validate
 
 
