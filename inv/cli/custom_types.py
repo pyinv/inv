@@ -4,6 +4,7 @@ from typing import Optional
 
 import click
 
+from inv.asset_manufacturer import AssetManufacturer
 from inv.cli.env import get_inv
 
 
@@ -38,4 +39,29 @@ class AssetCodeParamType(click.ParamType):
             return value
 
 
+class AssetManufacturerParamType(click.ParamType):
+    """ParamType for Manufacturer."""
+
+    name = "manufacturer"
+
+    def convert(
+            self,
+            value: str,
+            _: Optional[click.Parameter],
+            ctx: Optional[click.Context],
+    ) -> AssetManufacturer:
+        """Convert."""
+        inv = get_inv()
+
+        name_format = value.lower().replace(" ", "_").replace("-", "_")
+        name_format = re.sub('[^a-z0-9_]+', '', name_format)
+
+        try:
+            man = inv.get_manufacturer(name_format)
+        except ValueError:
+            self.fail("Unable to find manufacturer.")
+        return man
+
+
 ASSET_CODE = AssetCodeParamType
+ASSET_MANUFACTURER = AssetManufacturerParamType

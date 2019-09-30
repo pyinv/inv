@@ -1,4 +1,4 @@
-"""Command to list assets."""
+"""Command to list models."""
 import click
 
 from inv.asset_manufacturer import AssetManufacturer

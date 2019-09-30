@@ -44,6 +44,14 @@ class Inventory:
         """Find an asset or asset tree by code."""
         return self.tree.find_asset_by_asset_code(self.org, asset_code)
 
+    def get_manufacturer(self, formatted_name: str) -> AssetManufacturer:
+        """Find a manufacturer."""
+        try:
+            path = self.meta_dir.joinpath(formatted_name)
+            return AssetManufacturer.load_from_file(path, self)
+        except FileNotFoundError:
+            raise ValueError("No such manufacturer.")
+
     def get_models_by_manufacturer(self, man: AssetManufacturer) -> List[AssetModel]:
         """Get all models from a manufacturer."""
         models = []

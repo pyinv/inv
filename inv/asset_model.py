@@ -9,7 +9,7 @@ from re import sub
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
-from yaml import SafeLoader, load
+from yaml import SafeDumper, SafeLoader, dump, load
 
 from .asset_manufacturer import AssetManufacturer
 
@@ -51,3 +51,39 @@ class AssetModel(BaseModel):
         name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)
         return name_format
+
+    @classmethod
+    def create_instance(
+            cls,
+            name: str,
+            container: bool,
+            manufacturer: AssetManufacturer,
+    ):
+        """Create a model."""
+        name_format = name.lower().replace(" ", "_").replace("-", "_")
+        name_format = sub('[^a-z0-9_]+', '', name_format)
+        data_path = manufacturer.path.joinpath(f"{name_format}.yml")
+
+        if data_path.exists():
+            raise ValueError("That model name already exists.")
+
+        return cls(
+            name=name,
+            container=container,
+            manufacturer=manufacturer,
+            path=data_path,
+        )
+
+    def save(self, inv: 'Inventory', overwrite: bool = False) -> None:
+        """Save to a file."""
+        if self.path.exists():
+            if not overwrite:
+                raise FileExistsError("Model already exists.")
+
+        data = {
+            'name': self.name,
+            'container': self.container,
+            'manufacturer': self.manufacturer.calculate_filename(),
+        }
+
+        dump(data, self.path.open("w"), SafeDumper)
