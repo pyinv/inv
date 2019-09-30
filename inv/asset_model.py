@@ -52,13 +52,18 @@ class AssetModel(BaseModel):
         name_format = sub('[^a-z0-9_]+', '', name_format)
         return name_format
 
+    @property
+    def namespaced_name(self) -> str:
+        """Get the namespaced name for this model."""
+        return f"{self.path.parent.stem}/{self.path.stem}"
+
     @classmethod
     def create_instance(
             cls,
             name: str,
             container: bool,
             manufacturer: AssetManufacturer,
-    ):
+    ) -> 'AssetModel':
         """Create a model."""
         name_format = name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from .asset import Asset
 
 if TYPE_CHECKING:
+    from .asset_model import AssetModel
     from .inventory import Inventory
 
 
@@ -67,9 +68,19 @@ class AssetTree:
         return contents
 
     @property
+    def name(self) -> str:
+        """Get the name of the container."""
+        return self.container.name
+
+    @property
     def asset_code(self) -> str:
         """Get the asset code of the container."""
         return self.container.asset_code
+
+    @property
+    def model(self) -> 'AssetModel':
+        """Get the model of the container."""
+        return self.container.model
 
     def find_asset_by_asset_code(
             self,

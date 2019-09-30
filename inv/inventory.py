@@ -52,6 +52,15 @@ class Inventory:
         except FileNotFoundError:
             raise ValueError("No such manufacturer.")
 
+    def get_model(self, formatted_name: str) -> AssetModel:
+        """Find a model."""
+        path = self.meta_dir.joinpath(f"{formatted_name}.yml")
+
+        if not path.exists():
+            raise FileNotFoundError(f"Unable to find {formatted_name}")
+        else:
+            return AssetModel.load_from_file(path, self)
+
     def get_models_by_manufacturer(self, man: AssetManufacturer) -> List[AssetModel]:
         """Get all models from a manufacturer."""
         models = []

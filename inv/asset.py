@@ -4,11 +4,12 @@ from re import sub
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
-from yaml import SafeLoader, load
+from yaml import SafeDumper, SafeLoader, dump, load
 
 from .asset_model import AssetModel
 
 if TYPE_CHECKING:
+    from .asset_tree import AssetTree
     from .inventory import Inventory
 
 
@@ -33,10 +34,7 @@ class Asset(BaseModel):
         """Load an asset from a yml file."""
         data: Any = load(path.open(mode='r'), Loader=SafeLoader)
 
-        model = AssetModel.load_from_file(
-            inv.meta_dir.joinpath(Path(data["asset_model"] + ".yml")),
-            inv,
-        )
+        model = inv.get_model(data["asset_model"])
 
         data.update({'path': path})
         data.update({'model': model})
@@ -78,3 +76,39 @@ class Asset(BaseModel):
         name_format = self.name.lower().replace(" ", "_").replace("-", "_")
         name_format = sub('[^a-z0-9_]+', '', name_format)
         return f"{self.asset_code}_{self.model.calculate_filename()}_{name_format}"
+
+    @classmethod
+    def save_new(
+        cls,
+        code: str,
+        model: AssetModel,
+        name: str,
+        location: 'AssetTree',
+        inv: 'Inventory',
+    ) -> None:
+        """Save an new instance of asset."""
+        human_code = inv.asset_code.human_format(code)
+
+        name_format = name.lower().replace(" ", "_").replace("-", "_")
+        name_format = sub('[^a-z0-9_]+', '', name_format)
+        file_stem = f"{human_code}_" \
+                    f"{model.calculate_filename()}_" \
+                    f"{name_format}"
+
+        if model.container:
+            folder = location.path.joinpath(file_stem)
+            folder.mkdir()
+            path = folder.joinpath("data.yml")
+        else:
+            path = location.path.joinpath(f"{file_stem}.yml")
+
+        if path.exists():
+            raise ValueError("This asset already exists.")
+
+        data = {
+            'asset_code': human_code,
+            'asset_model': model.namespaced_name,
+            'name': name,
+        }
+
+        dump(data, path.open("w"), SafeDumper)
