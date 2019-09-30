@@ -67,7 +67,12 @@ class Asset(BaseModel):
     def display(self, inv: 'Inventory') -> None:
         """Print the information."""
         print(f"Asset Code: {self.asset_code}")
-        print(f"Current Location: {self.path.parent.stem}")
+        if self.path.stem == "data":
+            # Container
+            print(f"Current Location: {self.path.parents[1].stem}")
+        else:
+            print(f"Current Location: {self.path.parent.stem}")
+
         print(f"Model: {self.model.name}")
         print(f"Name: {self.name}")
 
