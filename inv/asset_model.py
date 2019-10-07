@@ -57,6 +57,11 @@ class AssetModel(BaseModel):
         """Get the namespaced name for this model."""
         return f"{self.path.parent.stem}/{self.path.stem}"
 
+    @property
+    def full_name(self) -> str:
+        """Get the full name."""
+        return f"{self.manufacturer.name} {self.name}"
+
     @classmethod
     def create_instance(
             cls,

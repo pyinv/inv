@@ -34,4 +34,4 @@ def show(code: str) -> None:
         asset.container.display(inventory)
         print(f"Found: {len(asset.contents)} items in container")
         for i in asset.contents:
-            print(f"\t{str(i)}")
+            print(f"\t{i.asset_code} - {i.model.full_name} - {i.name}")
