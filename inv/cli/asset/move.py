@@ -11,7 +11,7 @@ from inv.cli.env import get_inv
 
 
 @click.command()
-@click.option('--destination', prompt=True, type=ASSET_CODE())
+@click.option('--destination_code', prompt=True, type=ASSET_CODE())
 def move(destination_code: str) -> None:
     """
     Move an asset.
